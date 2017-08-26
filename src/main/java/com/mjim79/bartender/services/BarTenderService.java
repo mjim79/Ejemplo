@@ -16,8 +16,13 @@ public class BarTenderService {
     private final BarTenderRepository barTenderRepository;
 
     public boolean acceptOrder(Order order) {
-        this.barTenderRepository.save(order);
-        return true;
+        if (Barman.getInstance().prepareDrink(order.getDrink())) {
+            this.barTenderRepository.save(order);
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     public Map<Customer, EnumMap<DrinkType, Integer>> listOrders() {
