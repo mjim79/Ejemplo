@@ -47,7 +47,7 @@ public class Barman {
             this.barmanStatus = BarmanStatus.PREPARING_ONE_DRINK;
 
         } else if (barman.drinksInProgress.size() == 2 && DrinkType.BEER.equals(barman.drinksInProgress.peek())) {
-            this.barmanStatus = BarmanStatus.PREPARING_TWO_BERRS;
+            this.barmanStatus = BarmanStatus.PREPARING_TWO_BEERS;
         } else {
             throw new IllegalStateException("invalid.barman.status");
         }
@@ -67,4 +67,5 @@ public class Barman {
     public DrinkType getDrinkInProgress() {
         return this.drinksInProgress.peek();
     }
+
 }

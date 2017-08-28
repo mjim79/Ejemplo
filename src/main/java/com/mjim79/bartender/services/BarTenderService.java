@@ -35,10 +35,9 @@ public class BarTenderService {
         if (this.barmanService.prepareDrink(order.getDrink())) {
             this.barTenderRepository.save(order);
             return true;
-        } else {
-            return false;
         }
 
+        return false;
     }
 
     private boolean waitForTheBarman(DrinkType drink) {
