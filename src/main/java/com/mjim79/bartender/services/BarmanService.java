@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import org.slf4j.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.stereotype.*;
 
@@ -13,41 +12,21 @@ import com.mjim79.bartender.model.*;
 
 import lombok.*;
 
-@Component
+@Service
 @Scope("singleton")
-@Data
-public class Barman {
+@AllArgsConstructor
+public class BarmanService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BarTenderController.class);
 
     private final Queue<DrinkType> drinksInProgress = new LinkedList<>();
 
-    @Value("${secondsToPrepareDrink:5}")
-    private Integer secondsToPrepareDrink;
-
-    private static Barman barman;
-
-    private Barman() {
-
-    }
-
-    public static Barman getInstance() {
-        if (Objects.isNull(barman)) {
-            synchronized (Barman.class) {
-                if (Objects.isNull(barman)) {
-                    barman = new Barman();
-                }
-            }
-        }
-
-        return barman;
-
-    }
+    private final BarTenderConfiguration barTenderConfiguration;
 
     public boolean prepareDrink(DrinkType drink) {
 
         if (this.canPrepareDrink(drink)) {
-            synchronized (Barman.class) {
+            synchronized (BarmanService.class) {
                 if (this.canPrepareDrink(drink)) {
                     this.drinksInProgress.add(drink);
                     this.startToPrepareDrink();
@@ -81,13 +60,13 @@ public class Barman {
 
     private String doPrepareDrink() {
 
-        final String text = "Preparing drink " + this.drinksInProgress.peek();
+        final String text = "      --> Barman says: Preparing drink " + this.drinksInProgress.peek();
         LOGGER.info(text);
 
         try {
 
-            Thread.sleep(this.secondsToPrepareDrink * 1000L);
-            return this.drinksInProgress.peek() + " prepared!";
+            Thread.sleep(this.barTenderConfiguration.getSecondsToPrepareDrink() * 1000L);
+            return "      --> Barman says: " + this.drinksInProgress.peek() + " prepared!";
 
         } catch (final InterruptedException e) {
             LOGGER.error("Error " + text, e);
@@ -103,6 +82,10 @@ public class Barman {
 
     private boolean isPreparingOnlyOneBeer() {
         return this.drinksInProgress.size() == 1 && DrinkType.BEER.equals(this.drinksInProgress.peek());
+    }
+
+    public boolean isFree(DrinkType drink) {
+        return this.canPrepareDrink(drink);
     }
 
 }

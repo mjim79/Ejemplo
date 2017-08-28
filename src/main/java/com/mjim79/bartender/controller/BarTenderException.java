@@ -8,16 +8,16 @@ public class BarTenderException extends RuntimeException {
         this("");
     }
 
-    protected BarTenderException(Throwable causa) {
-        this("", causa);
+    protected BarTenderException(Throwable cause) {
+        this("", cause);
     }
 
-    protected BarTenderException(String mensaje) {
-        super(mensaje);
+    protected BarTenderException(String message) {
+        super(message);
     }
 
-    public BarTenderException(String mensaje, Throwable causa) {
-        super(mensaje, causa);
+    public BarTenderException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

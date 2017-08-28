@@ -1,7 +1,5 @@
 package com.mjim79.bartender.controller;
 
-import java.util.*;
-
 import org.springframework.stereotype.*;
 import org.springframework.validation.*;
 
@@ -14,7 +12,6 @@ import lombok.*;
 public class OrderValidator implements Validator {
 
     @Override
-
     public boolean supports(Class<?> clazz) {
         return Order.class.equals(clazz);
     }
@@ -26,15 +23,6 @@ public class OrderValidator implements Validator {
         ValidationUtils.rejectIfEmpty(e, "drink", "drink.empty");
 
         final Order order = (Order)target;
-
-        if (Objects.isNull(order)) {
-            e.rejectValue("order", "order.not.valid");
-            return;
-        }
-
-        if (Objects.isNull(order.getDrink()) || !(order.getDrink() instanceof DrinkType)) {
-            e.rejectValue("order", "drink.type..not.valid");
-        }
 
     }
 
