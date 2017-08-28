@@ -20,9 +20,9 @@ public class BarTenderController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BarTenderController.class);
 
-    private static final String MSG_ERROR_ACCEPT_ORDER = "error.accept.order";
+    private static final String MSG_ERR_ACCEPT_ORDER = "error.accept.order";
 
-    private static final String MSG_ERROR_LIST_ORDERS = "error.list.order";
+    private static final String MSG_ERR_LIST_ORDERS = "error.list.order";
 
     private static final String MSG_INFO_NEW_REQUEST_ACCEPT_ORDER = " --> NEW post request to ACCEPT order {}";
 
@@ -56,8 +56,8 @@ public class BarTenderController {
                 return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
             }
         } catch (final Exception e) {
-            LOGGER.error(MSG_ERROR_ACCEPT_ORDER, e);
-            throw new BarTenderException(MSG_ERROR_ACCEPT_ORDER, e);
+            LOGGER.error(MSG_ERR_ACCEPT_ORDER, e);
+            throw new BarTenderException(MSG_ERR_ACCEPT_ORDER, e);
 
         }
     }
@@ -71,8 +71,8 @@ public class BarTenderController {
             LOGGER.info(MSG_INFO_REQUEST_COMPLETED_GET_LIST_ORDERS);
             return new ResponseEntity<>(orders, HttpStatus.OK);
         } catch (final Exception e) {
-            LOGGER.error(MSG_ERROR_LIST_ORDERS, e);
-            throw new BarTenderException(MSG_ERROR_LIST_ORDERS, e);
+            LOGGER.error(MSG_ERR_LIST_ORDERS, e);
+            throw new BarTenderException(MSG_ERR_LIST_ORDERS, e);
         }
 
     }

@@ -1,10 +1,8 @@
 package com.mjim79.bartender.services;
 
-import java.util.*;
 import java.util.concurrent.*;
 
 import org.slf4j.*;
-import org.springframework.context.annotation.*;
 import org.springframework.stereotype.*;
 
 import com.mjim79.bartender.controller.*;
@@ -13,60 +11,57 @@ import com.mjim79.bartender.model.*;
 import lombok.*;
 
 @Service
-@Scope("singleton")
 @AllArgsConstructor
 public class BarmanService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BarTenderController.class);
 
-    private final Queue<DrinkType> drinksInProgress = new LinkedList<>();
+    private static final String MSG_INFO_PREPARING_DRINK = "      --> Barman says: Preparing drink: ";
+
+    private static final String MSG_INFO_DRINK_PREPARED = "      --> Barman says: Drink prerared: ";
+
+    private static final String MSG_ERR_NO_DRINKS_IN_PROCESS = "no.drinks.are.being.prepared";
 
     private final BarTenderConfiguration barTenderConfiguration;
 
+    private final Barman barman = Barman.getInstance();
+
+    public boolean canPrepareDrink(DrinkType drink) {
+        return this.barman.canPrepareDrink(drink);
+    }
+
     public boolean prepareDrink(DrinkType drink) {
 
-        if (this.canPrepareDrink(drink)) {
-            synchronized (BarmanService.class) {
-                if (this.canPrepareDrink(drink)) {
-                    this.drinksInProgress.add(drink);
+        if (this.barman.canPrepareDrink(drink)) {
+            synchronized (this) {
+                if (this.barman.canPrepareDrink(drink)) {
+                    this.barman.acceptDrink(drink);
                     this.startToPrepareDrink();
                     return true;
-                } else {
-                    return false;
                 }
-
             }
-        } else {
-            return false;
         }
 
+        return false;
     }
 
     private void startToPrepareDrink() {
-
+        // java.util.concurrent.CompletableFuture --> since Java 1.8
+        // Launch an async task in a new thread (ForkJoinPool.commonPool()) to prepare the drink, and then execute the
+        // callback to notify the drink is prepared.
         CompletableFuture.supplyAsync(this::doPrepareDrink).thenAccept(this::notifyDrinkReady);
 
     }
 
-    private void notifyDrinkReady(String text) {
-
-        if (this.drinksInProgress.isEmpty()) {
-            throw new IllegalStateException("No drinks are being prepared");
-        }
-
-        this.drinksInProgress.remove();
-        LOGGER.info(text);
-    }
-
     private String doPrepareDrink() {
 
-        final String text = "      --> Barman says: Preparing drink " + this.drinksInProgress.peek();
+        final String text = MSG_INFO_PREPARING_DRINK + this.barman.getDrinkInProgress();
         LOGGER.info(text);
 
         try {
 
             Thread.sleep(this.barTenderConfiguration.getSecondsToPrepareDrink() * 1000L);
-            return "      --> Barman says: " + this.drinksInProgress.peek() + " prepared!";
+            return MSG_INFO_DRINK_PREPARED + this.barman.getDrinkInProgress();
 
         } catch (final InterruptedException e) {
             LOGGER.error("Error " + text, e);
@@ -76,16 +71,14 @@ public class BarmanService {
 
     }
 
-    private boolean canPrepareDrink(DrinkType drink) {
-        return this.drinksInProgress.isEmpty() || DrinkType.BEER.equals(drink) && this.isPreparingOnlyOneBeer();
-    }
+    private void notifyDrinkReady(String text) {
 
-    private boolean isPreparingOnlyOneBeer() {
-        return this.drinksInProgress.size() == 1 && DrinkType.BEER.equals(this.drinksInProgress.peek());
-    }
+        if (BarmanStatus.FREE.equals(this.barman.getBarmanStatus())) {
+            throw new IllegalStateException(MSG_ERR_NO_DRINKS_IN_PROCESS);
+        }
 
-    public boolean isFree(DrinkType drink) {
-        return this.canPrepareDrink(drink);
+        this.barman.removeDrink();
+        LOGGER.info(text);
     }
 
 }

@@ -18,6 +18,8 @@ public class BarTenderService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BarTenderController.class);
 
+    private static final String MSG_ERR_WAITING_FOR_THE_BARMAN = "error.waiting.for.the.barman";
+
     private final BarTenderRepository barTenderRepository;
 
     private final BarmanService barmanService;
@@ -26,7 +28,7 @@ public class BarTenderService {
 
     public boolean acceptOrder(Order order) {
 
-        if (!this.barmanService.isFree(order.getDrink()) && !this.waitForTheBarman(order.getDrink())) {
+        if (!this.barmanService.canPrepareDrink(order.getDrink()) && !this.waitForTheBarman(order.getDrink())) {
             return false;
         }
 
@@ -41,12 +43,12 @@ public class BarTenderService {
 
     private boolean waitForTheBarman(DrinkType drink) {
 
-        final CountDownLatch done = new CountDownLatch(1);
-
         ExecutorService service = null;
 
         try {
-
+            // java.util.concurrent.CountDownLatch -> Since Java 1.7.
+            // CountDownLatch - await , wait for the count down to 0 or a time out.
+            final CountDownLatch done = new CountDownLatch(1);
             service = Executors.newSingleThreadExecutor();
             service.execute(() -> this.waitForTheBarmanFree(drink, done));
 
@@ -63,15 +65,8 @@ public class BarTenderService {
         return false;
     }
 
-    protected void manageInterruptedExceptionWaitingForTheBarmaIsFree(final InterruptedException e) {
-        final String textError = "Error waiting for the barman...";
-        LOGGER.error(textError, e);
-        Thread.currentThread().interrupt();
-        throw new BarTenderException(textError, e);
-    }
-
     private void waitForTheBarmanFree(DrinkType drink, CountDownLatch done) {
-        while (!this.barmanService.isFree(drink)) {
+        while (!this.barmanService.canPrepareDrink(drink)) {
             try {
                 Thread.sleep(500);
             } catch (final InterruptedException e) {
@@ -79,6 +74,12 @@ public class BarTenderService {
             }
         }
         done.countDown();
+    }
+
+    private void manageInterruptedExceptionWaitingForTheBarmaIsFree(final InterruptedException e) {
+        LOGGER.error(MSG_ERR_WAITING_FOR_THE_BARMAN, e);
+        Thread.currentThread().interrupt();
+        throw new BarTenderException(MSG_ERR_WAITING_FOR_THE_BARMAN, e);
     }
 
     public Map<Customer, EnumMap<DrinkType, Integer>> listOrders() {
