@@ -1,10 +1,13 @@
 package com.mjim79.bartender.model;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 public class Barman {
 
-    private final Queue<DrinkType> drinksInProgress = new LinkedList<>();
+    private static final String MSG_ERR_INVALID_BARMAN_STATUS = "invalid.barman.status";
+
+    private final Queue<DrinkType> drinksInProgress = new ConcurrentLinkedQueue<>();
 
     private BarmanStatus barmanStatus = BarmanStatus.FREE;
 
@@ -49,7 +52,7 @@ public class Barman {
         } else if (barman.drinksInProgress.size() == 2 && DrinkType.BEER.equals(barman.drinksInProgress.peek())) {
             this.barmanStatus = BarmanStatus.PREPARING_TWO_BEERS;
         } else {
-            throw new IllegalStateException("invalid.barman.status");
+            throw new IllegalStateException(MSG_ERR_INVALID_BARMAN_STATUS);
         }
 
     }

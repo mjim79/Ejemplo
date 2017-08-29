@@ -65,40 +65,6 @@ public class BarTenderServiceTest {
 
     }
 
-    // @Test(expected = BarTenderException.class)
-    // public void shouldThrowAnInterruptedException() {
-    //
-    // final Thread t = new Thread(() -> {
-    //
-    // when(this.barmanService.canPrepareDrink(DrinkType.BEER)).thenReturn(false);
-    // when(this.barTenderConfiguration.getSecondsToWaitForTheBarman()).thenReturn(2);
-    //
-    // this.serviceSpy.acceptOrder(BEER_ORDER);
-    //
-    // });
-    // t.start();
-    // try {
-    // Thread.sleep(100);
-    // } catch (final InterruptedException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    // t.interrupt();
-    //
-    // }
-
-    // @Test(expected = BarTenderException.class)
-    // public void shouldThrowAnInterruptedException() {
-    //
-    // when(this.barmanService.canPrepareDrink(DrinkType.BEER)).thenReturn(false);
-    // when(this.barTenderConfiguration.getSecondsToWaitForTheBarman()).thenReturn(2);
-    // spy(Thread.class);
-    // doThrow(InterruptedException.class).when(Thread.class);
-    //
-    // this.serviceSpy.acceptOrder(BEER_ORDER);
-    //
-    // }
-
     @Test
     public void shouldNotAcceptOrderIfPrepareDrinkReturnsFalse() {
 

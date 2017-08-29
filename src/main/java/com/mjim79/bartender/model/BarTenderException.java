@@ -1,4 +1,4 @@
-package com.mjim79.bartender.controller;
+package com.mjim79.bartender.model;
 
 public class BarTenderException extends RuntimeException {
 

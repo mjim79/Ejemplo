@@ -1,10 +1,12 @@
-package com.mjim79.bartender.controller;
+package com.mjim79.bartender.model;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.*;
+
+import com.mjim79.bartender.model.*;
 
 public class BarTenderExceptionTest {
 

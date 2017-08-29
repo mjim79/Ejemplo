@@ -3,20 +3,18 @@ package com.mjim79.bartender.services;
 import java.util.*;
 import java.util.concurrent.*;
 
-import org.slf4j.*;
 import org.springframework.stereotype.*;
 
-import com.mjim79.bartender.controller.*;
 import com.mjim79.bartender.model.*;
 import com.mjim79.bartender.repositories.*;
 
 import lombok.*;
+import lombok.extern.slf4j.*;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class BarTenderService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BarTenderController.class);
 
     private static final String MSG_ERR_WAITING_FOR_THE_BARMAN = "error.waiting.for.the.barman";
 
@@ -76,7 +74,7 @@ public class BarTenderService {
     }
 
     private void handleInterruptedExceptionWaitingForTheBarmaIsFree(final InterruptedException e) {
-        LOGGER.error(MSG_ERR_WAITING_FOR_THE_BARMAN, e);
+        log.error(MSG_ERR_WAITING_FOR_THE_BARMAN, e);
         Thread.currentThread().interrupt();
         throw new BarTenderException(MSG_ERR_WAITING_FOR_THE_BARMAN, e);
     }

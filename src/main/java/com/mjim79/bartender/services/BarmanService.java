@@ -2,19 +2,17 @@ package com.mjim79.bartender.services;
 
 import java.util.concurrent.*;
 
-import org.slf4j.*;
 import org.springframework.stereotype.*;
 
-import com.mjim79.bartender.controller.*;
 import com.mjim79.bartender.model.*;
 
 import lombok.*;
+import lombok.extern.slf4j.*;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class BarmanService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(BarTenderController.class);
 
     private static final String MSG_INFO_PREPARING_DRINK = "      --> Barman says: Preparing drink: ";
 
@@ -56,7 +54,7 @@ public class BarmanService {
     private String doPrepareDrink() {
 
         final String text = MSG_INFO_PREPARING_DRINK + this.barman.getDrinkInProgress();
-        LOGGER.info(text);
+        log.info(text);
 
         try {
 
@@ -64,7 +62,7 @@ public class BarmanService {
             return MSG_INFO_DRINK_PREPARED + this.barman.getDrinkInProgress();
 
         } catch (final InterruptedException e) {
-            LOGGER.error("Error " + text, e);
+            log.error("Error " + text, e);
             Thread.currentThread().interrupt();
             throw new BarTenderException("Error " + text, e);
         }
@@ -78,7 +76,7 @@ public class BarmanService {
         }
 
         this.barman.removeDrink();
-        LOGGER.info(text);
+        log.info(text);
     }
 
 }

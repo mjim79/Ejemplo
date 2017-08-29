@@ -22,8 +22,6 @@ public class OrderValidator implements Validator {
         ValidationUtils.rejectIfEmpty(e, "customer", "customer.empty");
         ValidationUtils.rejectIfEmpty(e, "drink", "drink.empty");
 
-        final Order order = (Order)target;
-
     }
 
 }
