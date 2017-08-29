@@ -44,9 +44,7 @@ public class BarmanService {
     }
 
     private void startToPrepareDrink() {
-        // java.util.concurrent.CompletableFuture --> since Java 1.8
-        // Launch an async task in a new thread (ForkJoinPool.commonPool()) to prepare the drink, and then execute the
-        // callback to notify the drink is prepared.
+
         CompletableFuture.supplyAsync(this::doPrepareDrink).thenAccept(this::notifyDrinkReady);
 
     }

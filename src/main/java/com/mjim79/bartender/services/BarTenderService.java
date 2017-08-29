@@ -43,8 +43,7 @@ public class BarTenderService {
         ExecutorService service = null;
 
         try {
-            // java.util.concurrent.CountDownLatch -> Since Java 1.7.
-            // CountDownLatch - await , wait for the count down to 0 or a time out.
+
             final CountDownLatch done = new CountDownLatch(1);
             service = Executors.newSingleThreadExecutor();
             service.execute(() -> this.waitForTheBarmanFree(drink, done));
