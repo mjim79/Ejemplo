@@ -1,4 +1,4 @@
-## Coding chanllenge: BarTender service ##
+## Coding challenge: BarTender service ##
 
 The BarTender service has been implemented accodring to the specifications provided by Knockout gaming using Spring Boot, Maven, Java 8, Lombok, Junit, Mockito and Hamcrest. The service implements one controller which attends POST and GET requests in the URL: http://localhost:8080/bartender.
 
