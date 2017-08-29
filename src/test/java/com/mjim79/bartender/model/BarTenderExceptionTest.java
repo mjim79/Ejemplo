@@ -6,8 +6,6 @@ import static org.mockito.Mockito.*;
 
 import org.junit.*;
 
-import com.mjim79.bartender.model.*;
-
 public class BarTenderExceptionTest {
 
     @Test
