@@ -54,7 +54,7 @@ public class BarTenderService {
             return done.await(this.barTenderConfiguration.getSecondsToWaitForTheBarman(), TimeUnit.SECONDS);
 
         } catch (final InterruptedException e) {
-            this.manageInterruptedExceptionWaitingForTheBarmaIsFree(e);
+            this.handleInterruptedExceptionWaitingForTheBarmaIsFree(e);
         } finally {
             if (Objects.nonNull(service)) {
                 service.shutdown();
@@ -69,13 +69,13 @@ public class BarTenderService {
             try {
                 Thread.sleep(500);
             } catch (final InterruptedException e) {
-                this.manageInterruptedExceptionWaitingForTheBarmaIsFree(e);
+                this.handleInterruptedExceptionWaitingForTheBarmaIsFree(e);
             }
         }
         done.countDown();
     }
 
-    private void manageInterruptedExceptionWaitingForTheBarmaIsFree(final InterruptedException e) {
+    private void handleInterruptedExceptionWaitingForTheBarmaIsFree(final InterruptedException e) {
         LOGGER.error(MSG_ERR_WAITING_FOR_THE_BARMAN, e);
         Thread.currentThread().interrupt();
         throw new BarTenderException(MSG_ERR_WAITING_FOR_THE_BARMAN, e);
