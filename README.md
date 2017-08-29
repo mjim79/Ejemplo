@@ -5,12 +5,15 @@ The BarTender service has been implemented using Spring Boot, Maven, Java 8, Lom
 The service implements one controller which attends POST and GET requests in the URL: http://localhost:8080/bartender
 
 JSON to POST a new order:
+```json
 {
     "customer": "28",
-    "drink": "DRINK"
+    "drink": "drink"
 }
+```
 
-GET request to get de orders listed - JSON gruoped by customer:
+GET request to get the orders listed - JSON group by customer:
+```json
 {
     "Customer(id=16, name=Customer 16)": {
         "beer": 4,
@@ -25,3 +28,4 @@ GET request to get de orders listed - JSON gruoped by customer:
         "drink": 0
     }
 }
+```
