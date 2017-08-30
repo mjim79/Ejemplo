@@ -57,11 +57,24 @@ public class BarTenderServiceTest {
     public void shouldNotAcceptOrderIfBarmanCanNotPrepareDrinkAfterWaitForTheBarman() {
 
         when(this.barmanService.canPrepareDrink(DrinkType.BEER)).thenReturn(false, false, true);
-        when(this.barTenderConfiguration.getSecondsToWaitForTheBarman()).thenReturn(2);
+        when(this.barTenderConfiguration.getSecondsToWaitForTheBarman()).thenReturn(1);
 
         final boolean result = this.service.acceptOrder(BEER_ORDER);
 
         assertThat(result, is(false));
+
+    }
+
+    @Test
+    public void shouldAcceptOrderIfBarmanCanPrepareDrinkAfterWaitForTheBarman() {
+
+        when(this.barmanService.canPrepareDrink(DrinkType.BEER)).thenReturn(false, true);
+        when(this.barmanService.prepareDrink(DrinkType.BEER)).thenReturn(true);
+        when(this.barTenderConfiguration.getSecondsToWaitForTheBarman()).thenReturn(1);
+
+        final boolean result = this.service.acceptOrder(BEER_ORDER);
+
+        assertThat(result, is(true));
 
     }
 
